@@ -56,3 +56,19 @@ class Lead(models.Model):
 
     def __str__(self):
         return f'#{self.pk} {self.name} {self.phone}'
+
+
+class TelegramTopic(models.Model):
+    """Тема (forum topic) в группе менеджеров для каждого типа заявок."""
+    key = models.CharField('Тип заявок', max_length=20, unique=True, choices=Lead.TYPE_CHOICES)
+    chat_id = models.CharField('ID группы', max_length=40)
+    thread_id = models.BigIntegerField('ID темы')
+    name = models.CharField('Название темы', max_length=128)
+    created_at = models.DateTimeField('Создана', auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Тема в Telegram'
+        verbose_name_plural = 'Темы в Telegram'
+
+    def __str__(self):
+        return self.name

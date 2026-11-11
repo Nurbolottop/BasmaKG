@@ -64,3 +64,12 @@ class LeadAdmin(admin.ModelAdmin):
     @admin.action(description='Отметить выполненными')
     def mark_done(self, request, queryset):
         queryset.update(status=Lead.STATUS_DONE)
+
+
+from apps.contacts.models import TelegramTopic  # noqa: E402
+
+
+@admin.register(TelegramTopic)
+class TelegramTopicAdmin(admin.ModelAdmin):
+    list_display = ['name', 'key', 'chat_id', 'thread_id', 'created_at']
+    readonly_fields = ['created_at']
