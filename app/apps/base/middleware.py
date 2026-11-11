@@ -24,3 +24,15 @@ class CanonicalHostMiddleware:
                 return HttpResponsePermanentRedirect(
                     f'{self.scheme}://{self.host}{request.get_full_path()}')
         return self.get_response(request)
+
+
+class SecurityHeadersMiddleware:
+    """Заголовки, которых нет в SecurityMiddleware Django."""
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        response.setdefault('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()')
+        return response
