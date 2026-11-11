@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% blocktranslate with city=site.city %}Услуги для бизнеса: печати, регистрация фирм, бухгалтерия — {{ city }}{% endblocktranslate %} | {{ site.site_name }}{% endblock %}
+{% block description %}{% blocktranslate with city=site.city %}Изготовление печатей и штампов, регистрация ИП и ОсОО, бухгалтерское сопровождение и получение лицензий в {{ city }}. Бесплатная консультация.{% endblocktranslate %}{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    {% include 'include/breadcrumbs.html' %}
+    <h1 class="h1">{% translate "Услуги для бизнеса" %}</h1>
+    <p class="lead" style="margin-top:16px">{% translate "С радостью поможем зарегистрировать компанию вашей мечты и полностью подготовим все необходимые документы." %}</p>
+  </div>
+</section>
+<section class="section" style="padding-top:0">
+  <div class="container svc-list">
+    {% for s in services %}
+    <a class="svc-row reveal" href="{{ s.get_absolute_url }}">
+      {% if s.image %}<img class="svc-row__img" src="{{ s.image.url }}" alt="{{ s.name }}" loading="lazy" width="120" height="120">{% else %}<span class="svc-row__img" style="display:grid;place-items:center"><svg class="icon" style="width:48px;height:48px"><use href="#i-{{ s.icon }}"/></svg></span>{% endif %}
+      <div>
+        <h2 class="svc-row__title">{{ s.name }}</h2>
+        <p class="svc-row__text">{{ s.short_description }}</p>
+        <div class="svc-row__meta">{% if s.price_text %}<span class="badge">{{ s.price_text }}</span>{% endif %}{% if s.term_text %}<span class="badge badge--muted">{{ s.term_text }}</span>{% endif %}</div>
+      </div>
+      <span class="svc-row__arrow"><svg class="icon"><use href="#i-arrow-ur"/></svg></span>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% if steps %}<section class="section section--white"><div class="container"><div class="section-head"><div><div class="eyebrow">{% translate "Как мы работаем" %}</div><h2 class="h2">{% translate "Просто и прозрачно" %}</h2></div></div>{% include 'include/steps.html' %}</div></section>{% endif %}
+{% if faqs %}<section class="section"><div class="container faq-wrap"><div class="faq-wrap__aside"><div class="eyebrow">FAQ</div><h2 class="h2">{% translate "Частые вопросы" %}</h2></div>{% include 'include/faq.html' %}</div></section>{% endif %}
+{% translate "Обсудим вашу задачу?" as cta_t %}{% include 'include/cta.html' with cta_title=cta_t %}
+{% endblock %}

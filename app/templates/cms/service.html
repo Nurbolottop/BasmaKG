@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% if service.meta_title %}{{ service.meta_title }}{% else %}{{ service.name }} {% blocktranslate with city=site.city %}в {{ city }}{% endblocktranslate %}{% if service.price_text %} — {{ service.price_text }}{% endif %} | {{ site.site_name }}{% endif %}{% endblock %}
+{% block description %}{% if service.meta_description %}{{ service.meta_description }}{% else %}{{ service.short_description }}{% if service.term_text %} {% translate "Срок" %}: {{ service.term_text }}.{% endif %} {% translate "Бесплатная консультация." %}{% endif %}{% endblock %}
+{% block content %}
+<section class="page-hero page-hero--dark">
+  <div class="container">
+    {% include 'include/breadcrumbs.html' %}
+    <h1 class="h1" style="max-width:900px">{{ service.name }}</h1>
+    <p class="lead" style="margin-top:20px">{{ service.short_description }}</p>
+  </div>
+</section>
+<section class="section">
+  <div class="container svc-page">
+    <div>
+      {% if service.features_list %}
+        <h2 class="h3">{% translate "Что входит" %}</h2>
+        <ul class="features">{% for f in service.features_list %}<li class="feature reveal"><svg class="icon"><use href="#i-check"/></svg>{{ f }}</li>{% endfor %}</ul>
+      {% endif %}
+      {% if service.description %}<div class="prose">{{ service.description|safe }}</div>{% endif %}
+      {% if steps %}<h2 class="h3" style="margin:48px 0 20px">{% translate "Как мы работаем" %}</h2>{% include 'include/steps.html' %}{% endif %}
+    </div>
+    <aside class="svc-aside">
+      <div class="svc-facts">
+        <div class="svc-fact"><small>{% translate "Стоимость" %}</small><b>{% if service.price_text %}{{ service.price_text }}{% else %}{% translate "по запросу" %}{% endif %}</b></div>
+        <div class="svc-fact"><small>{% translate "Срок" %}</small><b>{% if service.term_text %}{{ service.term_text }}{% else %}{% translate "уточняйте" %}{% endif %}</b></div>
+      </div>
+      <div class="form-card" data-form-card>
+        <div class="form-card__title">{% translate "Заказать услугу" %}</div>
+        <p class="form-card__sub">{% translate "Бесплатная консультация и точный расчёт" %}</p>
+        {% translate "Получить консультацию" as btn %}{% include 'include/lead_form.html' with type='service' service_id=service.pk subject=service.name_ru|default:service.name with_message=True button=btn %}
+      </div>
+    </aside>
+  </div>
+</section>
+{% if others %}
+<section class="section section--white">
+  <div class="container">
+    <div class="section-head"><h2 class="h2">{% translate "Другие услуги" %}</h2></div>
+    <div class="svc-list">
+      {% for s in others %}
+      <a class="svc-row" href="{{ s.get_absolute_url }}">
+        {% if s.image %}<img class="svc-row__img" src="{{ s.image.url }}" alt="{{ s.name }}" loading="lazy" width="120" height="120">{% else %}<span class="svc-row__img"></span>{% endif %}
+        <div><h3 class="svc-row__title">{{ s.name }}</h3><p class="svc-row__text">{{ s.short_description }}</p></div>
+        <span class="svc-row__arrow"><svg class="icon"><use href="#i-arrow-ur"/></svg></span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

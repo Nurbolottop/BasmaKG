@@ -1,0 +1,10 @@
+{% if steps %}
+<div class="steps">
+  {% for s in steps %}
+  <div class="step reveal" style="--d:{% widthratio forloop.counter0 1 90 %}ms">
+    <div class="step__title">{{ s.title }}</div>
+    <p class="step__text">{{ s.text }}</p>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}

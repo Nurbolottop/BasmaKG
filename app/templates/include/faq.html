@@ -1,0 +1,10 @@
+{% if faqs %}
+<div class="faq">
+  {% for f in faqs %}
+  <details class="faq__item reveal"{% if forloop.first %} open{% endif %}>
+    <summary class="faq__q">{{ f.question }}<span class="faq__toggle"><svg class="icon"><use href="#i-plus"/></svg></span></summary>
+    <div class="faq__a">{{ f.answer|linebreaksbr }}</div>
+  </details>
+  {% endfor %}
+</div>
+{% endif %}

@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+{% load static i18n seo %}
+
+{% block content %}
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero__glow"></div>
+  <div class="container hero__grid">
+    <div>
+      <p class="hero__badge reveal"><b>{{ site.city }}</b> {% translate "Изготовление печатей и штампов" %}</p>
+      <h1 class="hero__title reveal" style="--d:.08s">
+        {% for line in site.hero_lines %}
+          {% if line.style == 'mark' %}<span class="line"><span class="mark">{{ line.text }}</span></span>
+          {% elif line.style == 'muted' %}<span class="line stroke">{{ line.text }}</span>
+          {% else %}<span class="line">{{ line.text }}</span>{% endif %}
+        {% endfor %}
+      </h1>
+      <p class="hero__text reveal" style="--d:.16s">{{ site.hero_text }}</p>
+      <div class="hero__cta reveal" style="--d:.24s">
+        <a class="btn btn--yellow" href="{% url 'catalog:constructor' %}">{% translate "Собрать печать онлайн" %} <svg class="icon icon--arrow"><use href="#i-arrow-ur"/></svg></a>
+        {% if site.whatsapp %}
+          <a class="btn btn--ghost" href="{{ site.whatsapp_url }}" target="_blank" rel="noopener"><svg class="icon"><use href="#i-whatsapp"/></svg>{% translate "Написать в WhatsApp" %}</a>
+        {% else %}
+          <button class="btn btn--ghost" type="button" data-modal-open data-subject="Консультация"><svg class="icon"><use href="#i-phone"/></svg>{% translate "Заказать звонок" %}</button>
+        {% endif %}
+      </div>
+      <div class="hero__stats reveal" style="--d:.32s">
+        <div><div class="stat__num">{{ site.stat_speed }}</div><div class="stat__label">{% translate "изготовление печати" %}</div></div>
+        <div><div class="stat__num">{{ site.stat_clients }}</div><div class="stat__label">{% translate "довольных клиентов" %}</div></div>
+        <div><div class="stat__num">{{ site.stat_years }}</div><div class="stat__label">{% translate "лет опыта" %}</div></div>
+      </div>
+    </div>
+
+    <div class="hero__visual reveal" style="--d:.2s">
+      <div class="seal" data-seal role="button" tabindex="0" aria-label="{% translate 'Поставить печать' %}">
+        <div class="seal__disc"></div>
+        <svg class="seal__ring" viewBox="0 0 400 400" aria-hidden="true">
+          <defs><path id="seal-path" d="M200,200 m-172,0 a172,172 0 1,1 344,0 a172,172 0 1,1 -344,0"/></defs>
+          <text><textPath href="#seal-path" textLength="1060">Basma Service ✦ {% translate "Печати" %} ✦ {% translate "Штампы" %} ✦ {% translate "Регистрация" %} ✦ {% translate "Бухгалтерия" %} ✦</textPath></text>
+        </svg>
+        <div class="seal__core">
+          <svg viewBox="0 0 40 46" aria-hidden="true"><path d="M15.5 9.6a4.5 4.5 0 0 1 9 0c0 2.3-1.4 3.4-1.4 6v2.2h-6.2v-2.2c0-2.6-1.4-3.7-1.4-6Z" fill="#ffd400"/><rect x="10" y="19.8" width="20" height="5.6" rx="2" fill="#ffd400"/><rect x="11.5" y="28" width="17" height="2.4" rx="1.2" fill="#ffd400"/></svg>
+        </div>
+        <span class="seal__hint">{% translate "Нажмите — поставим печать" %}</span>
+      </div>
+      <div class="hero__float hero__float--1"><span class="hero__float-ico"><svg class="icon"><use href="#i-pen"/></svg></span><span>{% translate "Макет бесплатно" %}<small>{% translate "согласуем за 15 минут" %}</small></span></div>
+      <div class="hero__float hero__float--2"><span class="hero__float-ico"><svg class="icon"><use href="#i-shield"/></svg></span><span>Trodat · Colop<small>{% translate "оригинальные оснастки" %}</small></span></div>
+    </div>
+  </div>
+
+  <div class="marquee" aria-hidden="true">
+    {% translate "Печати ОсОО" as m1 %}{% translate "Печати ИП" as m2 %}{% translate "Штампы" as m3 %}{% translate "Факсимиле" as m4 %}{% translate "Флеш-печати" as m5 %}{% translate "Регистрация фирм" as m6 %}{% translate "Бухгалтерия" as m7 %}{% translate "Лицензии" as m8 %}
+    <div class="marquee__track">
+      {% for _ in "12" %}
+        {% for word in m1|add:"|"|add:m2|add:"|"|add:m3|add:"|"|add:m4|add:"|"|add:m5|add:"|"|add:m6|add:"|"|add:m7|add:"|"|add:m8|split_pipe %}<span class="marquee__item">{{ word }} <svg viewBox="0 0 24 24"><path d="M12 0l3 9 9 3-9 3-3 9-3-9-9-3 9-3z" fill="currentColor"/></svg></span>{% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERVICES ============ -->
+{% if services %}
+<section class="section" id="services">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-head__text">
+        <div class="eyebrow reveal">{% translate "Услуги" %}</div>
+        <h2 class="h2 reveal">{% translate "Всё для бизнеса —" %}<br>{% translate "в одном окне" %}</h2>
+      </div>
+      <a class="link-arrow reveal" href="{% url 'cms:services' %}">{% translate "Все услуги" %} <svg class="icon"><use href="#i-arrow"/></svg></a>
+    </div>
+    <div class="bento">
+      {% for s in services %}
+      <a class="svc reveal{% if forloop.first %} svc--big{% elif forloop.counter == 4 %} svc--dark{% endif %}" style="--d:{% widthratio forloop.counter0 1 80 %}ms" href="{{ s.get_absolute_url }}">
+        <span class="svc__ico"><svg class="icon"><use href="#i-{{ s.icon }}"/></svg></span>
+        {% if s.image %}<img class="svc__img" src="{{ s.image.url }}" alt="" loading="lazy" width="280" height="280">{% endif %}
+        <h3 class="svc__title">{{ s.name }}</h3>
+        <span class="svc__text">{{ s.short_description }}</span>
+        {% if s.price_text or s.term_text %}<span class="svc__meta">{% if s.price_text %}<span class="badge{% if forloop.first %} badge--dark{% endif %}">{{ s.price_text }}</span>{% endif %}{% if s.term_text %}<span class="badge badge--muted">{{ s.term_text }}</span>{% endif %}</span>{% endif %}
+        <span class="svc__arrow"><svg class="icon"><use href="#i-arrow-ur"/></svg></span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ============ CATEGORIES ============ -->
+{% if categories %}
+<section class="section section--white">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-head__text">
+        <div class="eyebrow reveal">{% translate "Печати и штампы" %}</div>
+        <h2 class="h2 reveal">{% translate "Оснастки на любой случай" %}</h2>
+        <p class="lead reveal" style="margin-top:16px">{% translate "Изготавливаем печати и штампы под ваши задачи — от бюджетной ручной до флеш-печати с защитой от подделки." %}</p>
+      </div>
+      <a class="btn btn--ghost reveal" href="{% url 'catalog:catalog' %}">{% translate "Весь каталог" %} <svg class="icon icon--arrow"><use href="#i-arrow-ur"/></svg></a>
+    </div>
+    <div class="cats">
+      {% for c in categories %}
+      <a class="cat reveal" style="--d:{% widthratio forloop.counter0 1 70 %}ms" href="{{ c.get_absolute_url }}">
+        <div class="cat__img">{% if c.image %}<img src="{{ c.image.url }}" alt="{{ c.name }}" loading="lazy" width="300" height="300">{% endif %}</div>
+        <h3 class="cat__title">{{ c.name }}</h3>
+        <div class="cat__sub">{{ c.tagline }}</div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ============ CONSTRUCTOR PROMO ============ -->
+<section class="section section--tight">
+  <div class="container">
+    <div class="promo reveal">
+      <div style="position:relative;z-index:1">
+        <div class="eyebrow">{% translate "Новое" %}</div>
+        <h2 class="h2">{% blocktranslate %}Соберите печать <span class="text-yellow">онлайн</span> за 2 минуты{% endblocktranslate %}</h2>
+        <ul class="promo__list">
+          <li><svg class="icon"><use href="#i-check"/></svg>{% translate "Живой предпросмотр оттиска" %}</li>
+          <li><svg class="icon"><use href="#i-check"/></svg>{% translate "Выбор оснастки, формы и цвета краски" %}</li>
+          <li><svg class="icon"><use href="#i-check"/></svg>{% translate "Стоимость сразу — без звонков" %}</li>
+        </ul>
+        <a class="btn btn--yellow" href="{% url 'catalog:constructor' %}">{% translate "Открыть конструктор" %} <svg class="icon icon--arrow"><use href="#i-arrow-ur"/></svg></a>
+      </div>
+      <div class="promo__demo">
+        <div class="promo__demo-stamp" data-stamp-demo></div>
+        <label class="promo__demo-label" for="demo-name">{% translate "Попробуйте: название компании" %}</label>
+        <input id="demo-name" type="text" value="{% translate 'Ваша компания' %}" maxlength="40" data-stamp-demo-input>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ POPULAR ============ -->
+{% if popular %}
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-head__text">
+        <div class="eyebrow reveal">{% translate "Хиты продаж" %}</div>
+        <h2 class="h2 reveal">{% translate "Чаще всего заказывают" %}</h2>
+      </div>
+      <a class="link-arrow reveal" href="{% url 'catalog:catalog' %}">{% translate "Смотреть все" %} <svg class="icon"><use href="#i-arrow"/></svg></a>
+    </div>
+    <div class="products">
+      {% for p in popular %}{% include 'include/product_card.html' %}{% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ============ ADVANTAGES ============ -->
+{% if advantages %}
+<section class="section section--dark">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-head__text">
+        <div class="eyebrow reveal">{% translate "Почему Basma" %}</div>
+        <h2 class="h2 reveal">{% translate "Скорость и качество —" %}<br><span class="text-yellow">{% translate "без компромиссов" %}</span></h2>
+      </div>
+      <p class="lead reveal">{% translate "Предлагаем широкий выбор стилей, цветов и корпусов высокого качества." %}</p>
+    </div>
+    <div class="advs reveal">
+      {% for a in advantages %}
+      <div class="adv">
+        <div class="adv__ico"><svg class="icon"><use href="#i-{{ a.icon }}"/></svg></div>
+        <h3 class="adv__title">{{ a.title }}</h3>
+        <p class="adv__text">{{ a.text }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ============ STEPS ============ -->
+{% if steps %}
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-head__text">
+        <div class="eyebrow reveal">{% translate "Как мы работаем" %}</div>
+        <h2 class="h2 reveal">{% translate "От заявки до печати — 4 шага" %}</h2>
+      </div>
+    </div>
+    {% include 'include/steps.html' %}
+  </div>
+</section>
+{% endif %}
+
+<!-- ============ REVIEWS ============ -->
+{% if reviews %}
+<section class="section section--white">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-head__text">
+        <div class="eyebrow reveal">{% translate "Отзывы" %}</div>
+        <h2 class="h2 reveal">{% translate "Нам доверяют" %}</h2>
+      </div>
+    </div>
+    <div class="reviews">
+      {% for r in reviews %}
+      <figure class="review reveal" style="--d:{% widthratio forloop.counter0 1 80 %}ms">
+        <div class="review__stars">{% for _ in "12345"|make_list|slice:r.rating %}<svg class="icon icon--fill"><use href="#i-star"/></svg>{% endfor %}</div>
+        <blockquote class="review__text">«{{ r.text }}»</blockquote>
+        <figcaption class="review__author"><span class="review__avatar">{{ r.name|first }}</span><span><span class="review__name">{{ r.name }}</span><br><span class="review__company">{{ r.company }}</span></span></figcaption>
+      </figure>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ============ FAQ ============ -->
+{% if faqs %}
+<section class="section">
+  <div class="container faq-wrap">
+    <div class="faq-wrap__aside">
+      <div class="eyebrow reveal">FAQ</div>
+      <h2 class="h2 reveal">{% translate "Частые вопросы" %}</h2>
+      <p class="lead reveal" style="margin:16px 0 28px">{% translate "Не нашли ответ? Напишите нам — ответим за пару минут." %}</p>
+      <button class="btn reveal" type="button" data-modal-open data-subject="Вопрос с сайта">{% translate "Задать вопрос" %} <svg class="icon icon--arrow"><use href="#i-arrow-ur"/></svg></button>
+    </div>
+    {% include 'include/faq.html' %}
+  </div>
+</section>
+{% endif %}
+
+{% include 'include/cta.html' %}
+{% include 'include/seo_text.html' with text=site.seo_text %}
+{% endblock %}
+
+{% block scripts %}<script src="{% static 'js/stamp.js' %}" defer></script>{% endblock %}

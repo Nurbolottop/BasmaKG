@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% translate "Заявка принята" %} | {{ site.site_name }}{% endblock %}
+{% block content %}
+<section class="container center-page"><div>
+  <div class="form-success__ico"><svg class="icon" style="width:32px;height:32px;stroke-width:2.5"><use href="#i-check"/></svg></div>
+  <h1 class="h2">{% translate "Спасибо, заявка принята!" %}</h1>
+  <p>{% translate "Менеджер перезвонит вам в течение 15 минут в рабочее время. Если срочно — звоните:" %} <a href="tel:{{ site.phone_href }}"><b>{{ site.phone }}</b></a></p>
+  <div class="actions"><a class="btn" href="{% url 'base:home' %}">{% translate "На главную" %}</a><a class="btn btn--ghost" href="{% url 'catalog:catalog' %}">{% translate "В каталог" %}</a></div>
+</div></section>
+{% endblock %}

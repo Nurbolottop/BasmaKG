@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% if category %}{% if category.meta_title %}{{ category.meta_title }}{% else %}{% blocktranslate with name=category.name city=site.city %}{{ name }} — купить, цены в {{ city }}{% endblocktranslate %} | {{ site.site_name }}{% endif %}{% else %}{% blocktranslate with city=site.city %}Каталог печатей, штампов и оснасток — цены, {{ city }}{% endblocktranslate %} | {{ site.site_name }}{% endif %}{% endblock %}
+{% block description %}{% if category %}{% if category.meta_description %}{{ category.meta_description }}{% else %}{{ category.name }}: {{ category.tagline|lower }}. {% translate "Изготовление печати от 1 часа, макет бесплатно, оригинальные оснастки Trodat и Colop." %}{% endif %}{% else %}{% translate "Автоматические, ручные и карманные оснастки, флеш-печати и расходные материалы. Цены, наличие, изготовление от 1 часа." %}{% endif %}{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    {% include 'include/breadcrumbs.html' %}
+    <div class="cat-intro">
+      <div>
+        <h1 class="h1">{% if category %}{{ category.name }}{% else %}{% translate "Каталог печатей и оснасток" %}{% endif %}</h1>
+        <div class="lead" style="margin-top:16px">{% if category %}{{ category.description|striptags|truncatechars:260 }}{% else %}{% translate "Оснастки ведущих брендов и расходные материалы. Изготовим клише и соберём печать от 1 часа." %}{% endif %}</div>
+      </div>
+      {% if category.image %}<img class="cat-intro__img" src="{{ category.image.url }}" alt="{{ category.name }}" width="160" height="160">{% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="catalog-bar">
+      <nav class="catalog-chips" aria-label="{% translate 'Категории' %}">
+        <a class="chip{% if not category %} is-active{% endif %}" href="{% url 'catalog:catalog' %}">{% translate "Все" %}</a>
+        {% for c in categories %}<a class="chip{% if c == category %} is-active{% endif %}" href="{{ c.get_absolute_url }}">{{ c.name }}</a>{% endfor %}
+      </nav>
+      <form class="catalog-tools" method="get" role="search" data-catalog-form>
+        <label class="search"><span class="sr-only">{% translate "Поиск" %}</span><svg class="icon"><use href="#i-search"/></svg><input class="input" type="search" name="q" value="{{ q }}" placeholder="{% translate 'Поиск: Trodat, 40 мм…' %}"></label>
+        <label><span class="sr-only">{% translate "Сортировка" %}</span>
+          <select class="select" name="sort" data-autosubmit>
+            <option value="popular"{% if sort == 'popular' %} selected{% endif %}>{% translate "Сначала хиты" %}</option>
+            <option value="price"{% if sort == 'price' %} selected{% endif %}>{% translate "Сначала дешевле" %}</option>
+            <option value="-price"{% if sort == '-price' %} selected{% endif %}>{% translate "Сначала дороже" %}</option>
+            <option value="new"{% if sort == 'new' %} selected{% endif %}>{% translate "Новинки" %}</option>
+          </select>
+        </label>
+      </form>
+    </div>
+    <div data-catalog-grid>{% include 'catalog/_grid.html' %}</div>
+  </div>
+</section>
+
+{% translate "Не нашли нужную оснастку?" as cta_t %}{% translate "Привезём под заказ или подберём аналог. Оставьте заявку — менеджер перезвонит за 15 минут." as cta_x %}
+{% include 'include/cta.html' with cta_title=cta_t cta_text=cta_x %}
+{% if category %}{% include 'include/seo_text.html' with text=category.seo_text %}{% endif %}
+{% endblock %}

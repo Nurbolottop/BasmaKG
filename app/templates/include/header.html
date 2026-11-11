@@ -1,0 +1,85 @@
+{% load i18n %}{% get_current_language as LANG %}{% url 'catalog:catalog' as catalog_url %}{% url 'cms:services' as services_url %}{% url 'cms:about' as about_url %}{% url 'contacts:contacts' as contacts_url %}{% url 'catalog:constructor' as constructor_url %}{% url 'base:home' as home_url %}
+<div class="topbar">
+  <div class="container topbar__inner">
+    <div class="topbar__group">
+      <span class="topbar__item"><svg class="icon"><use href="#i-pin"/></svg>{{ site.city }}{% if site.address %}, {{ site.address }}{% endif %}</span>
+      <span class="topbar__item topbar__hide-md"><svg class="icon"><use href="#i-clock"/></svg>{{ site.working_hours }}</span>
+    </div>
+    <div class="topbar__group">
+      {% if site.email %}<a class="topbar__item topbar__hide-md" href="mailto:{{ site.email }}"><svg class="icon"><use href="#i-mail"/></svg>{{ site.email }}</a>{% endif %}
+      {% if site.instagram %}<a class="topbar__item" href="{{ site.instagram }}" target="_blank" rel="noopener"><svg class="icon"><use href="#i-instagram"/></svg>Instagram</a>{% endif %}
+    </div>
+  </div>
+</div>
+
+<header class="header" id="header">
+  <div class="container header__inner">
+    <a href="{{ home_url }}" class="logo" aria-label="{{ site.site_name }} — {% translate 'на главную' %}">
+      {% include 'include/logo_mark.html' %}
+      <span class="logo__text">Basma<span>Service</span></span>
+    </a>
+
+    <nav class="header__nav" aria-label="{% translate 'Основное меню' %}">
+      <div class="nav-item">
+        <a class="nav-link{% if catalog_url in request.path or '/product/' in request.path %} is-active{% endif %}" href="{{ catalog_url }}">{% translate "Каталог" %} <svg class="icon"><use href="#i-chevron"/></svg></a>
+        <div class="dropdown dropdown--mega">
+          {% for c in nav_categories %}
+            <a class="dropdown__link" href="{{ c.get_absolute_url }}">
+              {% if c.image %}<img class="dropdown__img" src="{{ c.image.url }}" alt="" loading="lazy" width="52" height="52">{% endif %}
+              <span><span class="dropdown__title">{{ c.name }}</span><br><span class="dropdown__sub">{{ c.tagline }}</span></span>
+            </a>
+          {% endfor %}
+          <a class="dropdown__all" href="{{ catalog_url }}">{% translate "Весь каталог" %} <svg class="icon"><use href="#i-arrow"/></svg></a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <a class="nav-link{% if services_url in request.path %} is-active{% endif %}" href="{{ services_url }}">{% translate "Услуги" %} <svg class="icon"><use href="#i-chevron"/></svg></a>
+        <div class="dropdown">
+          {% for s in nav_services %}
+            <a class="dropdown__link" href="{{ s.get_absolute_url }}">
+              <span class="dropdown__ico"><svg class="icon"><use href="#i-{{ s.icon }}"/></svg></span>
+              <span><span class="dropdown__title">{{ s.name }}</span><br><span class="dropdown__sub">{{ s.price_text }}</span></span>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+      <a class="nav-link{% if request.path == constructor_url %} is-active{% endif %}" href="{{ constructor_url }}">{% translate "Конструктор печати" %}</a>
+      <a class="nav-link{% if request.path == about_url %} is-active{% endif %}" href="{{ about_url }}">{% translate "О нас" %}</a>
+      <a class="nav-link{% if request.path == contacts_url %} is-active{% endif %}" href="{{ contacts_url }}">{% translate "Контакты" %}</a>
+    </nav>
+
+    <div class="header__actions">
+      <nav class="lang" aria-label="{% translate 'Язык сайта' %}">
+        {% for alt in alternate_urls %}<a href="{{ alt.url|cut:site_root }}" hreflang="{{ alt.code }}" lang="{{ alt.code }}" title="{{ alt.name }}"{% if alt.code == LANG %} class="is-active" aria-current="true"{% endif %}>{% if alt.code == 'ky' %}KG{% else %}RU{% endif %}</a>{% endfor %}
+      </nav>
+      <a class="header__phone" href="tel:{{ site.phone_href }}">{{ site.phone }}<small>{% translate "Звоните, ответим сразу" %}</small></a>
+      <button class="btn btn--yellow btn--sm btn--desktop" type="button" data-modal-open data-subject="Обратный звонок">{% translate "Заказать звонок" %}</button>
+      <button class="burger" type="button" aria-label="{% translate 'Открыть меню' %}" aria-controls="mobile-menu" aria-expanded="false" data-menu-open><svg class="icon"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+  <div class="mobile-menu__head">
+    <a href="{{ home_url }}" class="logo">{% include 'include/logo_mark.html' with stroke='#ffd400' %}<span class="logo__text">Basma<span>Service</span></span></a>
+    <div style="display:flex;gap:10px;align-items:center">
+      <nav class="lang" aria-label="{% translate 'Язык сайта' %}">
+        {% for alt in alternate_urls %}<a href="{{ alt.url|cut:site_root }}" hreflang="{{ alt.code }}" lang="{{ alt.code }}"{% if alt.code == LANG %} class="is-active" aria-current="true"{% endif %}>{% if alt.code == 'ky' %}KG{% else %}RU{% endif %}</a>{% endfor %}
+      </nav>
+      <button class="mobile-menu__close" type="button" aria-label="{% translate 'Закрыть меню' %}" data-menu-close><svg class="icon"><use href="#i-close"/></svg></button>
+    </div>
+  </div>
+  <nav class="mobile-menu__nav">
+    <a href="{{ catalog_url }}">{% translate "Каталог" %} <svg class="icon"><use href="#i-arrow-ur"/></svg></a>
+    <div class="mobile-menu__sub">{% for c in nav_categories %}<a href="{{ c.get_absolute_url }}">{{ c.name }}</a>{% endfor %}</div>
+    <a href="{{ services_url }}">{% translate "Услуги" %} <svg class="icon"><use href="#i-arrow-ur"/></svg></a>
+    <div class="mobile-menu__sub">{% for s in nav_services %}<a href="{{ s.get_absolute_url }}">{{ s.name }}</a>{% endfor %}</div>
+    <a href="{{ constructor_url }}">{% translate "Конструктор печати" %} <svg class="icon"><use href="#i-arrow-ur"/></svg></a>
+    <a href="{{ about_url }}">{% translate "О компании" %} <svg class="icon"><use href="#i-arrow-ur"/></svg></a>
+    <a href="{{ contacts_url }}">{% translate "Контакты" %} <svg class="icon"><use href="#i-arrow-ur"/></svg></a>
+  </nav>
+  <div class="mobile-menu__foot">
+    <a class="btn btn--yellow btn--block" href="tel:{{ site.phone_href }}"><svg class="icon"><use href="#i-phone"/></svg>{{ site.phone }}</a>
+    {% if site.whatsapp %}<a class="btn btn--wa btn--block" href="{{ site.whatsapp_url }}" target="_blank" rel="noopener"><svg class="icon"><use href="#i-whatsapp"/></svg>{% translate "Написать в WhatsApp" %}</a>{% endif %}
+  </div>
+</div>

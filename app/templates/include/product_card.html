@@ -1,0 +1,19 @@
+{% load i18n %}
+<article class="product reveal" style="--d:{% widthratio forloop.counter0|default:0 1 60 %}ms">
+  <div class="product__media">
+    {% if p.cover %}<img src="{{ p.cover.url }}" alt="{{ p.name }}{% if p.size %}, {{ p.size }}{% endif %}" loading="lazy" width="400" height="400">{% else %}<svg class="icon" style="width:64px;height:64px;color:#c9c7c0"><use href="#i-stamp"/></svg>{% endif %}
+    <div class="product__badges">
+      {% if p.is_popular %}<span class="badge">{% translate "Хит" %}</span>{% endif %}
+      {% if not p.in_stock %}<span class="badge badge--muted">{% translate "Под заказ" %}</span>{% endif %}
+    </div>
+  </div>
+  <div class="product__body">
+    <div class="product__cat">{{ p.category.name }}</div>
+    <h3 class="product__title"><a href="{{ p.get_absolute_url }}">{{ p.name }}</a></h3>
+    {% if p.size or p.brand %}<div class="product__specs">{% if p.size %}<span class="badge badge--muted">{{ p.size }}</span>{% endif %}{% if p.brand %}<span class="badge badge--muted">{{ p.brand }}</span>{% endif %}</div>{% endif %}
+    <div class="product__foot">
+      {% include 'include/price.html' %}
+      <button class="product__btn" type="button" aria-label="{% translate 'Заказать' %}: {{ p.name }}" data-modal-open data-type="order" data-product="{{ p.pk }}" data-subject="Заказ: {{ p.name_ru|default:p.name }}"><svg class="icon"><use href="#i-cart"/></svg></button>
+    </div>
+  </div>
+</article>

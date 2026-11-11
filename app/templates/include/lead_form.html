@@ -1,0 +1,51 @@
+{% load i18n %}{% comment %}
+  Переиспользуемая форма заявки.
+  Параметры: type (callback|order|service), subject, product_id, service_id, with_file, with_message, button
+  subject остаётся на русском — его читает менеджер.
+{% endcomment %}
+<form class="form" action="{% url 'contacts:lead' %}" method="post" enctype="multipart/form-data" data-lead-form novalidate>
+  {% csrf_token %}
+  <input type="hidden" name="type" value="{{ type|default:'callback' }}">
+  <input type="hidden" name="subject" value="{{ subject|default:'' }}" data-subject-input>
+  {% if product_id %}<input type="hidden" name="product" value="{{ product_id }}">{% endif %}
+  {% if service_id %}<input type="hidden" name="service" value="{{ service_id }}">{% endif %}
+  <div class="hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+
+  <div class="form__row">
+    <label class="field">
+      <span class="field__label">{% translate "Имя" %}</span>
+      <input class="input" type="text" name="name" placeholder="{% translate 'Как к вам обращаться' %}" autocomplete="name" required maxlength="120">
+    </label>
+    <label class="field">
+      <span class="field__label">{% translate "Телефон" %}</span>
+      <input class="input" type="tel" name="phone" placeholder="+996 ___ ___ ___" autocomplete="tel" required data-phone maxlength="40">
+    </label>
+  </div>
+
+  {% if with_message %}
+  <label class="field">
+    <span class="field__label">{% translate "Комментарий" %}</span>
+    <textarea class="textarea" name="message" placeholder="{% translate 'Что нужно сделать? Например: печать ОсОО в автоматической оснастке' %}" maxlength="2000"></textarea>
+  </label>
+  {% endif %}
+
+  {% if with_file %}
+  <label class="field file-drop" data-file-drop>
+    <input type="file" name="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.heic,.doc,.docx,.cdr,.ai">
+    <span class="file-drop__ico"><svg class="icon"><use href="#i-upload"/></svg></span>
+    <span class="file-drop__text"><b data-file-name>{% translate "Прикрепить макет или эскиз" %}</b><small>{% translate "PDF, JPG, PNG, CDR, AI — до 10 МБ" %}</small></span>
+  </label>
+  {% endif %}
+
+  <label class="check">
+    <input type="checkbox" name="agree" checked required>
+    <span>{% url 'cms:page' 'privacy' as privacy_url %}{% blocktranslate %}Согласен(на) на обработку персональных данных и <a href="{{ privacy_url }}" target="_blank">политику конфиденциальности</a>{% endblocktranslate %}</span>
+  </label>
+
+  <button class="btn btn--yellow btn--block" type="submit">{% if button %}{{ button }}{% else %}{% translate "Отправить заявку" %}{% endif %} <svg class="icon icon--arrow"><use href="#i-arrow-ur"/></svg></button>
+</form>
+<div class="form-success">
+  <div class="form-success__ico"><svg class="icon" style="width:32px;height:32px;stroke-width:2.5"><use href="#i-check"/></svg></div>
+  <div class="form-card__title" style="display:block">{% translate "Заявка принята!" %}</div>
+  <p style="color:var(--muted)">{% translate "Перезвоним в течение 15 минут в рабочее время." %}</p>
+</div>

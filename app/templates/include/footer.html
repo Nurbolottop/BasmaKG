@@ -1,0 +1,50 @@
+{% load i18n %}{% now "Y" as year %}
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div>
+        <a href="{% url 'base:home' %}" class="logo">{% include 'include/logo_mark.html' with stroke='#ffd400' %}<span class="logo__text">Basma<span>Service</span></span></a>
+        <p class="footer__about">{{ site.tagline }}. {% translate "Печать за 1 час, макет бесплатно, оригинальные оснастки." %}</p>
+        <div class="socials">
+          {% if site.instagram %}<a href="{{ site.instagram }}" target="_blank" rel="noopener" aria-label="Instagram"><svg class="icon"><use href="#i-instagram"/></svg></a>{% endif %}
+          {% if site.whatsapp %}<a href="{{ site.whatsapp_url }}" target="_blank" rel="noopener" aria-label="WhatsApp"><svg class="icon"><use href="#i-whatsapp"/></svg></a>{% endif %}
+          {% if site.telegram %}<a href="{{ site.telegram_url }}" target="_blank" rel="noopener" aria-label="Telegram"><svg class="icon"><use href="#i-telegram"/></svg></a>{% endif %}
+          {% if site.youtube %}<a href="{{ site.youtube }}" target="_blank" rel="noopener" aria-label="YouTube"><svg class="icon"><use href="#i-youtube"/></svg></a>{% endif %}
+          {% if site.tiktok %}<a href="{{ site.tiktok }}" target="_blank" rel="noopener" aria-label="TikTok"><svg class="icon"><use href="#i-tiktok"/></svg></a>{% endif %}
+          {% if site.facebook %}<a href="{{ site.facebook }}" target="_blank" rel="noopener" aria-label="Facebook"><svg class="icon"><use href="#i-facebook"/></svg></a>{% endif %}
+        </div>
+      </div>
+      <nav aria-label="{% translate 'Каталог' %}">
+        <div class="footer__title">{% translate "Каталог" %}</div>
+        <ul class="footer__list">
+          {% for c in nav_categories %}<li><a href="{{ c.get_absolute_url }}">{{ c.name }}</a></li>{% endfor %}
+          <li><a href="{% url 'catalog:constructor' %}">{% translate "Конструктор печати" %}</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="{% translate 'Услуги' %}">
+        <div class="footer__title">{% translate "Услуги" %}</div>
+        <ul class="footer__list">
+          {% for s in nav_services %}<li><a href="{{ s.get_absolute_url }}">{{ s.name }}</a></li>{% endfor %}
+          <li><a href="{% url 'cms:about' %}">{% translate "О компании" %}</a></li>
+        </ul>
+      </nav>
+      <div>
+        <div class="footer__title">{% translate "Контакты" %}</div>
+        <address class="footer__list" style="font-style:normal">
+          <a class="footer__contact" href="tel:{{ site.phone_href }}"><svg class="icon"><use href="#i-phone"/></svg>{{ site.phone }}</a>
+          {% if site.phone_2 %}<span class="footer__contact"><svg class="icon"><use href="#i-phone"/></svg>{{ site.phone_2 }}</span>{% endif %}
+          {% if site.email %}<a class="footer__contact" href="mailto:{{ site.email }}"><svg class="icon"><use href="#i-mail"/></svg>{{ site.email }}</a>{% endif %}
+          <span class="footer__contact"><svg class="icon"><use href="#i-pin"/></svg><span>{{ site.city }}{% if site.address %}, {{ site.address }}{% endif %}</span></span>
+          <span class="footer__contact"><svg class="icon"><use href="#i-clock"/></svg>{{ site.working_hours }}</span>
+        </address>
+      </div>
+    </div>
+  </div>
+  <div class="footer__giant" aria-hidden="true">BASMA</div>
+  <div class="footer__bottom">
+    <div class="container" style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap">
+      <span>© {{ year }} {{ site.site_name }}. {% translate "Все права защищены." %}</span>
+      <a href="{% url 'cms:page' 'privacy' %}">{% translate "Политика конфиденциальности" %}</a>
+    </div>
+  </div>
+</footer>

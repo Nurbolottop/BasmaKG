@@ -1,0 +1,15 @@
+asgiref==3.8.1
+Django==5.2.19
+django-ckeditor==6.7.4
+django-js-asset==3.1.2
+django-modeltranslation==0.20.6
+django-resized==1.0.3
+gunicorn==27.0.0
+pillow==12.3.0
+psycopg2-binary==2.9.10
+pyTelegramBotAPI==4.15.4
+python-dotenv==1.1.0
+redis==5.2.1
+requests==2.34.2
+sqlparse==0.5.3
+tzdata==2025.2

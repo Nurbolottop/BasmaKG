@@ -1,0 +1,87 @@
+{% load static i18n seo %}{% get_current_language as LANG %}<!doctype html>
+<html lang="{{ LANG }}" prefix="og: https://ogp.me/ns#">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+{% capture as page_title %}{% if seo_meta.title %}{{ seo_meta.title }}{% else %}{% block title %}{% if site.meta_title %}{{ site.meta_title }}{% else %}{% blocktranslate with city=site.city %}Изготовление печатей и штампов за 1 час, {{ city }}{% endblocktranslate %} — {{ site.site_name }}{% endif %}{% endblock %}{% endif %}{% endcapture %}
+{% capture as page_description %}{% if seo_meta.description %}{{ seo_meta.description }}{% else %}{% block description %}{% if site.meta_description %}{{ site.meta_description }}{% else %}{% translate "Печати ОсОО и ИП, штампы, факсимиле и флеш-печати от 1 часа. Макет бесплатно, оснастки Trodat и Colop. Регистрация фирм, бухгалтерия, лицензии." %}{% endif %}{% endblock %}{% endif %}{% endcapture %}
+{% capture as page_og_image %}{% if seo_meta.og_image %}{{ site_root }}{{ seo_meta.og_image.url }}{% elif og_image %}{{ og_image }}{% else %}{{ og_image_default }}{% endif %}{% endcapture %}
+  <title>{{ page_title }}</title>
+  <meta name="description" content="{{ page_description }}">
+  {% if noindex or seo_meta.noindex %}
+  <meta name="robots" content="noindex, follow">
+  {% else %}
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="{{ canonical_url }}">
+  {% for alt in alternate_urls %}<link rel="alternate" hreflang="{{ alt.code }}" href="{{ alt.url }}">
+  {% endfor %}{% with alternate_urls|first as default_alt %}<link rel="alternate" hreflang="x-default" href="{{ default_alt.url }}">{% endwith %}
+  {% endif %}
+
+  <meta property="og:type" content="{{ og_type|default:'website' }}">
+  <meta property="og:site_name" content="{{ site.site_name }}">
+  <meta property="og:url" content="{{ canonical_url }}">
+  <meta property="og:title" content="{{ page_title }}">
+  <meta property="og:description" content="{{ page_description }}">
+  <meta property="og:image" content="{{ page_og_image }}">
+  <meta property="og:image:alt" content="{{ site.site_name }}">
+  <meta property="og:locale" content="{% if LANG == 'ky' %}ky_KG{% else %}ru_RU{% endif %}">
+  <meta property="og:locale:alternate" content="{% if LANG == 'ky' %}ru_RU{% else %}ky_KG{% endif %}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ page_title }}">
+  <meta name="twitter:description" content="{{ page_description }}">
+  <meta name="twitter:image" content="{{ page_og_image }}">
+
+  {% if site.google_verification %}<meta name="google-site-verification" content="{{ site.google_verification }}">{% endif %}
+  {% if site.yandex_verification %}<meta name="yandex-verification" content="{{ site.yandex_verification }}">{% endif %}
+  <meta name="format-detection" content="telephone=no">
+  <meta name="theme-color" content="#0d0d0f">
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="{% static 'img/favicon-32.png' %}" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="{% static 'img/apple-touch-icon.png' %}">
+  <link rel="manifest" href="/site.webmanifest">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700;800&display=swap&subset=cyrillic,cyrillic-ext" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+
+  <script type="application/ld+json">{{ org_schema|jsonld }}</script>
+  <script type="application/ld+json">{{ website_schema|jsonld }}</script>
+  {% if breadcrumbs %}<script type="application/ld+json">{% breadcrumbs_jsonld breadcrumbs %}</script>{% endif %}
+  {% for s in schema %}{% if s %}<script type="application/ld+json">{{ s|jsonld }}</script>{% endif %}{% endfor %}
+  {% block head %}{% endblock %}
+
+  {% if site.ga4_id %}
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{ site.ga4_id|urlencode }}"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','{{ site.ga4_id|escapejs }}');</script>
+  {% endif %}
+  {% if site.ym_id %}
+  <script>window.YM_ID=parseInt('{{ site.ym_id|escapejs }}',10);(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,"script","https://mc.yandex.ru/metrika/tag.js","ym");ym(window.YM_ID,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});</script>
+  {% endif %}
+  {{ site.head_scripts|safe }}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  <a class="skip-link" href="#main">{% translate "К содержимому" %}</a>
+  {% include 'include/icons.html' %}
+  {% include 'include/header.html' %}
+
+  <main id="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  {% include 'include/footer.html' %}
+  {% include 'include/modal.html' %}
+  {% include 'include/fab.html' %}
+
+  <div class="toasts" id="toasts" aria-live="polite">
+    {% for message in messages %}
+      <div class="toast{% if message.tags == 'error' %} toast--error{% endif %}">{{ message }}</div>
+    {% endfor %}
+  </div>
+
+  {{ js_i18n|json_script:"i18n" }}
+  <script src="{% static 'js/main.js' %}" defer></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

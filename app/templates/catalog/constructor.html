@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% blocktranslate with city=site.city %}Конструктор печати онлайн — заказать печать в {{ city }}{% endblocktranslate %} | {{ site.site_name }}{% endblock %}
+{% block description %}{% translate "Соберите печать онлайн: живой предпросмотр оттиска, выбор оснастки и цвета краски, стоимость сразу. Изготовление от 1 часа." %}{% endblock %}
+
+{% block content %}
+<section class="page-hero page-hero--dark">
+  <div class="container">
+    {% include 'include/breadcrumbs.html' %}
+    <h1 class="h1">{% blocktranslate %}Соберите печать <span class="mark">онлайн</span>{% endblocktranslate %}</h1>
+    <p class="lead" style="margin-top:20px">{% translate "Введите данные — оттиск обновится сразу. Мы проверим макет, перезвоним и изготовим печать от 1 часа." %}</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:clamp(32px,4vw,56px)">
+  <div class="container">
+    {% comment %}value у радиокнопок — на русском: их читает менеджер в заявке{% endcomment %}
+    <form class="builder" action="{% url 'contacts:lead' %}" method="post" enctype="multipart/form-data" data-lead-form data-builder novalidate>
+      {% csrf_token %}
+      <input type="hidden" name="type" value="stamp">
+      <input type="hidden" name="subject" value="Конструктор печати" data-b-subject>
+      <input type="hidden" name="d_total" value="" data-b-total-input>
+      <div class="hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+
+      <div class="builder__preview">
+        <div class="preview-card">
+          <div class="preview-stage" data-b-stage></div>
+        </div>
+        <div class="preview-total">
+          <div><small>{% translate "Ориентировочно" %}</small><b data-b-total>—</b></div>
+          <div style="text-align:right"><small>{% translate "Срок" %}</small><b style="font-size:18px;color:#fff" data-b-term>{% translate "от 1 часа" %}</b></div>
+        </div>
+        <p class="preview-note">{% translate "Предпросмотр условный. Финальный макет пришлём на согласование — бесплатно." %}</p>
+      </div>
+
+      <div class="builder__steps">
+        <fieldset class="bstep" style="border:0">
+          <legend class="bstep__head"><span class="bstep__num">1</span><span class="bstep__title">{% translate "Что изготовить" %}</span></legend>
+          <div class="options">
+            <label class="option"><input type="radio" name="d_kind" value="Печать ОсОО" data-kind="ooo" checked><span class="option__box"><b>{% translate "Печать ОсОО" %}</b><small>{% translate "Для организаций" %}</small></span></label>
+            <label class="option"><input type="radio" name="d_kind" value="Печать ИП" data-kind="ip"><span class="option__box"><b>{% translate "Печать ИП" %}</b><small>{% translate "Для предпринимателей" %}</small></span></label>
+            <label class="option"><input type="radio" name="d_kind" value="Печать врача" data-kind="doctor"><span class="option__box"><b>{% translate "Печать врача" %}</b><small>{% translate "Личная печать" %}</small></span></label>
+            <label class="option"><input type="radio" name="d_kind" value="Штамп" data-kind="stamp"><span class="option__box"><b>{% translate "Штамп" %}</b><small>{% translate "Реквизиты, «Оплачено»" %}</small></span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="bstep" style="border:0">
+          <legend class="bstep__head"><span class="bstep__num">2</span><span class="bstep__title">{% translate "Текст оттиска" %}</span></legend>
+          <div class="form">
+            <label class="field"><span class="field__label" data-b-org-label>{% translate "Название организации" %}</span><input class="input" type="text" name="d_org" value="Basma Service" maxlength="90" data-b="org"></label>
+            <div class="form__row">
+              <label class="field"><span class="field__label" data-b-inn-label>{% translate "ИНН" %}</span><input class="input" type="text" name="d_inn" value="01234567890123" maxlength="40" data-b="inn" inputmode="numeric"></label>
+              <label class="field"><span class="field__label">{% translate "Город" %}</span><input class="input" type="text" name="d_city" value="{{ site.city|cut:'г. ' }}" maxlength="40" data-b="city"></label>
+            </div>
+            <label class="field"><span class="field__label">{% translate "Текст в центре" %}</span><input class="input" type="text" name="d_center" value="" placeholder="{% translate 'Например: «Для документов» или логотип — прикрепите ниже' %}" maxlength="40" data-b="center"></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="bstep" style="border:0">
+          <legend class="bstep__head"><span class="bstep__num">3</span><span class="bstep__title">{% translate "Форма" %}</span></legend>
+          <div class="options">
+            <label class="option"><input type="radio" name="d_shape" value="Круглая" data-shape="round" checked><span class="option__box"><span class="option__shape option__shape--round"></span><b>{% translate "Круглая" %}</b><small>Ø 38–45 {% translate "мм" %}</small></span></label>
+            <label class="option"><input type="radio" name="d_shape" value="Квадратная" data-shape="square"><span class="option__box"><span class="option__shape option__shape--square"></span><b>{% translate "Квадратная" %}</b><small>{% translate "до 40 × 40 мм" %}</small></span></label>
+            <label class="option"><input type="radio" name="d_shape" value="Прямоугольная" data-shape="rect"><span class="option__box"><span class="option__shape option__shape--rect"></span><b>{% translate "Прямоугольная" %}</b><small>{% translate "штампы, реквизиты" %}</small></span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="bstep" style="border:0">
+          <legend class="bstep__head"><span class="bstep__num">4</span><span class="bstep__title">{% translate "Оснастка" %}</span></legend>
+          <div class="holders" data-b-holders></div>
+        </fieldset>
+
+        <fieldset class="bstep" style="border:0">
+          <legend class="bstep__head"><span class="bstep__num">5</span><span class="bstep__title">{% translate "Цвет краски и количество" %}</span></legend>
+          <div class="extras">
+            <div class="inks">
+              <label class="ink" title="{% translate 'Синий' %}"><input type="radio" name="d_ink" value="Синий" data-ink="#1f3fbf" checked aria-label="{% translate 'Синий' %}"><span style="--c:#1f3fbf"></span></label>
+              <label class="ink" title="{% translate 'Фиолетовый' %}"><input type="radio" name="d_ink" value="Фиолетовый" data-ink="#5b2ca0" aria-label="{% translate 'Фиолетовый' %}"><span style="--c:#5b2ca0"></span></label>
+              <label class="ink" title="{% translate 'Красный' %}"><input type="radio" name="d_ink" value="Красный" data-ink="#c8102e" aria-label="{% translate 'Красный' %}"><span style="--c:#c8102e"></span></label>
+              <label class="ink" title="{% translate 'Зелёный' %}"><input type="radio" name="d_ink" value="Зелёный" data-ink="#12804a" aria-label="{% translate 'Зелёный' %}"><span style="--c:#12804a"></span></label>
+              <label class="ink" title="{% translate 'Чёрный' %}"><input type="radio" name="d_ink" value="Чёрный" data-ink="#151515" aria-label="{% translate 'Чёрный' %}"><span style="--c:#151515"></span></label>
+            </div>
+            <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+              <div class="qty"><button type="button" data-qty="-1" aria-label="{% translate 'Меньше' %}">−</button><input type="text" name="d_qty" value="1" inputmode="numeric" data-b-qty aria-label="{% translate 'Количество' %}"><button type="button" data-qty="1" aria-label="{% translate 'Больше' %}">+</button></div>
+              <label class="switch"><input type="checkbox" name="d_urgent" value="Да" data-b-urgent>{% translate "Срочно (+30%)" %}</label>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="bstep" style="border:0">
+          <legend class="bstep__head"><span class="bstep__num">6</span><span class="bstep__title">{% translate "Контакты" %}</span></legend>
+          <div class="form" style="gap:14px">
+            <div class="form__row">
+              <label class="field"><span class="field__label">{% translate "Имя" %}</span><input class="input" type="text" name="name" placeholder="{% translate 'Как к вам обращаться' %}" autocomplete="name" required maxlength="120"></label>
+              <label class="field"><span class="field__label">{% translate "Телефон" %}</span><input class="input" type="tel" name="phone" placeholder="+996 ___ ___ ___" autocomplete="tel" required data-phone maxlength="40"></label>
+            </div>
+            <label class="field file-drop" data-file-drop>
+              <input type="file" name="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.heic,.doc,.docx,.cdr,.ai">
+              <span class="file-drop__ico"><svg class="icon"><use href="#i-upload"/></svg></span>
+              <span class="file-drop__text"><b data-file-name>{% translate "Логотип или фото документов" %}</b><small>{% translate "Свидетельство / патент — ускорит изготовление" %}</small></span>
+            </label>
+            <label class="field"><span class="field__label">{% translate "Комментарий" %}</span><textarea class="textarea" name="message" placeholder="{% translate 'Пожелания по макету' %}" maxlength="2000"></textarea></label>
+            <label class="check"><input type="checkbox" name="agree" checked required><span>{% url 'cms:page' 'privacy' as privacy_url %}{% blocktranslate %}Согласен(на) на обработку персональных данных и <a href="{{ privacy_url }}" target="_blank">политику конфиденциальности</a>{% endblocktranslate %}</span></label>
+            <button class="btn btn--yellow btn--block" type="submit">{% translate "Отправить на согласование" %} <svg class="icon icon--arrow"><use href="#i-arrow-ur"/></svg></button>
+          </div>
+        </fieldset>
+      </div>
+    </form>
+    <div class="form-card" data-builder-success style="display:none;max-width:560px;margin:0 auto;text-align:center">
+      <div class="form-success" style="display:block">
+        <div class="form-success__ico"><svg class="icon" style="width:32px;height:32px;stroke-width:2.5"><use href="#i-check"/></svg></div>
+        <div class="form-card__title">{% translate "Макет отправлен!" %}</div>
+        <p style="color:var(--muted);margin:8px 0 24px">{% translate "Менеджер проверит данные и перезвонит в течение 15 минут, чтобы согласовать макет." %}</p>
+        <a class="btn" href="{% url 'base:home' %}">{% translate "На главную" %}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if faqs %}
+<section class="section section--white">
+  <div class="container faq-wrap">
+    <div class="faq-wrap__aside"><div class="eyebrow">FAQ</div><h2 class="h2">{% translate "Вопросы о печатях" %}</h2></div>
+    {% include 'include/faq.html' %}
+  </div>
+</section>
+{% endif %}
+{{ holders_data|json_script:"holders-data" }}
+{% endblock %}
+
+{% block scripts %}<script src="{% static 'js/stamp.js' %}" defer></script>{% endblock %}

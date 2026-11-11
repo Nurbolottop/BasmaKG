@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% translate "Контакты" %} {{ site.site_name }}: {{ site.phone }}, {{ site.city }}{% endblock %}
+{% block description %}{{ site.site_name }} — {{ site.phone }}, {{ site.city }}{% if site.address %}, {{ site.address }}{% endif %}. {{ site.working_hours }}. {% translate "Печати и штампы за 1 час." %}{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    {% include 'include/breadcrumbs.html' %}
+    <h1 class="h1">{% translate "Свяжитесь" %}<br>{% translate "с нами" %}</h1>
+  </div>
+</section>
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="contact-grid">
+      <a class="contact-card reveal" href="tel:{{ site.phone_href }}"><span class="contact-card__ico"><svg class="icon"><use href="#i-phone"/></svg></span><small>{% translate "Телефон" %}</small><b>{{ site.phone }}</b>{% if site.phone_2 %}<b>{{ site.phone_2 }}</b>{% endif %}</a>
+      {% if site.whatsapp %}<a class="contact-card reveal" href="{{ site.whatsapp_url }}" target="_blank" rel="noopener"><span class="contact-card__ico"><svg class="icon"><use href="#i-whatsapp"/></svg></span><small>WhatsApp</small><b>{% translate "Написать" %}</b></a>
+      {% elif site.instagram %}<a class="contact-card reveal" href="{{ site.instagram }}" target="_blank" rel="noopener"><span class="contact-card__ico"><svg class="icon"><use href="#i-instagram"/></svg></span><small>Instagram</small><b>{% translate "Открыть профиль" %}</b></a>{% endif %}
+      {% if site.map_link %}<a class="contact-card reveal" href="{{ site.map_link }}" target="_blank" rel="noopener">{% else %}<div class="contact-card reveal">{% endif %}<span class="contact-card__ico"><svg class="icon"><use href="#i-pin"/></svg></span><small>{% translate "Адрес" %}</small><b>{{ site.city }}{% if site.address %}, {{ site.address }}{% endif %}</b>{% if site.map_link %}</a>{% else %}</div>{% endif %}
+      <div class="contact-card reveal"><span class="contact-card__ico"><svg class="icon"><use href="#i-clock"/></svg></span><small>{% translate "Режим работы" %}</small><b>{{ site.working_hours }}</b></div>
+    </div>
+  </div>
+</section>
+<section class="section section--tight" style="padding-top:0">
+  <div class="container" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:16px">
+    <div class="map reveal">
+      {% if site.map_embed_url %}<iframe src="{{ site.map_embed_url }}" loading="lazy" title="{% translate 'Карта проезда' %}" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+      {% else %}<div class="map__placeholder"><div><svg class="icon" style="width:48px;height:48px;margin:0 auto 16px;color:var(--yellow)"><use href="#i-pin"/></svg><div class="h3">{{ site.city }}</div><p style="color:var(--muted-on-dark);margin-top:8px">{% if site.address %}{{ site.address }}{% else %}{% translate "Точный адрес уточняйте по телефону" %}{% endif %}</p></div></div>{% endif %}
+    </div>
+    <div class="form-card reveal" data-form-card style="box-shadow:none">
+      <h2 class="form-card__title">{% translate "Напишите нам" %}</h2>
+      <p class="form-card__sub">{% translate "Ответим в течение 15 минут в рабочее время" %}</p>
+      {% include 'include/lead_form.html' with type='callback' with_message=True with_file=True %}
+    </div>
+  </div>
+</section>
+{% if faqs %}<section class="section section--white"><div class="container faq-wrap"><div class="faq-wrap__aside"><div class="eyebrow">FAQ</div><h2 class="h2">{% translate "Частые вопросы" %}</h2></div>{% include 'include/faq.html' %}</div></section>{% endif %}
+{% endblock %}

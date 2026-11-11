@@ -1,0 +1,12 @@
+{% load i18n %}
+<div class="modal" id="lead-modal" role="dialog" aria-modal="true" aria-labelledby="lead-modal-title" aria-hidden="true">
+  <div class="modal__overlay" data-modal-close></div>
+  <div class="modal__dialog">
+    <button class="modal__close" type="button" aria-label="{% translate 'Закрыть' %}" data-modal-close><svg class="icon"><use href="#i-close"/></svg></button>
+    <div class="form-card" data-form-card>
+      <div class="form-card__title" id="lead-modal-title" data-modal-title>{% translate "Оставьте заявку" %}</div>
+      <p class="form-card__sub">{% translate "Перезвоним за 15 минут, проконсультируем и рассчитаем стоимость." %}</p>
+      {% translate "Жду звонка" as btn %}{% include 'include/lead_form.html' with type='callback' with_message=True with_file=True button=btn %}
+    </div>
+  </div>
+</div>

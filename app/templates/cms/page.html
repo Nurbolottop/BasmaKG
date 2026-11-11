@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}{% if page.meta_title %}{{ page.meta_title }}{% else %}{{ page.title }} | {{ site.site_name }}{% endif %}{% endblock %}
+{% block description %}{% if page.meta_description %}{{ page.meta_description }}{% else %}{{ page.lead|default:page.content|striptags|truncatechars:160 }}{% endif %}{% endblock %}
+{% block content %}
+<section class="page-hero"><div class="container">
+  {% include 'include/breadcrumbs.html' %}
+  <h1 class="h2">{{ page.title }}</h1>
+  {% if page.lead %}<p class="lead" style="margin-top:16px">{{ page.lead }}</p>{% endif %}
+</div></section>
+<section class="section" style="padding-top:0"><div class="container"><div class="prose">{{ page.content|safe }}</div></div></section>
+{% endblock %}

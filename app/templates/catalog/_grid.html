@@ -1,0 +1,19 @@
+{% load i18n %}{% if page.object_list %}
+<div class="products">
+  {% for p in page.object_list %}{% include 'include/product_card.html' %}{% endfor %}
+</div>
+{% if page.has_other_pages %}
+<nav class="pagination" aria-label="{% translate 'Страницы' %}">
+  {% for n in page.paginator.page_range %}
+    {% if n == page.number %}<span class="is-current" aria-current="page">{{ n }}</span>
+    {% else %}<a href="?{% if n > 1 %}page={{ n }}{% endif %}{% if q %}&q={{ q|urlencode }}{% endif %}{% if sort != 'popular' %}&sort={{ sort }}{% endif %}">{{ n }}</a>{% endif %}
+  {% endfor %}
+</nav>
+{% endif %}
+{% else %}
+<div class="empty">
+  <div class="h3">{% translate "Ничего не нашли" %}</div>
+  <p>{% if q %}{% blocktranslate %}По запросу «{{ q }}» товаров нет.{% endblocktranslate %} {% endif %}{% translate "Опишите, что нужно — подберём или изготовим под заказ." %}</p>
+  <button class="btn btn--yellow" type="button" data-modal-open data-subject="Подбор оснастки{% if q %}: {{ q }}{% endif %}">{% translate "Подобрать с менеджером" %}</button>
+</div>
+{% endif %}

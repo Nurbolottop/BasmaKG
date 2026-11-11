@@ -1,0 +1,10 @@
+{% load i18n %}{% if text %}
+<section class="section section--tight">
+  <div class="container">
+    <div class="seo-text" data-seo-text>
+      <div class="seo-text__body prose">{{ text|safe }}</div>
+      <button class="link-arrow seo-text__toggle" type="button" data-seo-toggle aria-expanded="false">{% translate "Читать полностью" %} <svg class="icon"><use href="#i-chevron"/></svg></button>
+    </div>
+  </div>
+</section>
+{% endif %}

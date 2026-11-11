@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% if product.meta_title %}{{ product.meta_title }}{% else %}{% blocktranslate with name=product.name city=site.city %}{{ name }} — купить в {{ city }}{% endblocktranslate %}{% if product.price is not None %}, {% if product.price_from %}{% translate "от" %} {% endif %}{{ product.price }} {% translate "сом" %}{% endif %} | {{ site.site_name }}{% endif %}{% endblock %}
+{% block description %}{% if product.meta_description %}{{ product.meta_description }}{% else %}{{ product.name }}{% if product.size %} ({{ product.size }}){% endif %}. {{ product.short_description }}. {% translate "Изготовление печати от 1 часа, макет бесплатно." %}{% endif %}{% endblock %}
+
+{% block content %}
+<section class="page-hero" style="padding-bottom:0">
+  <div class="container">{% include 'include/breadcrumbs.html' %}</div>
+</section>
+
+<section class="section" style="padding-top:16px">
+  <div class="container pdp">
+    <div class="gallery" data-gallery>
+      <div class="gallery__main">
+        {% if product.cover %}<img src="{{ product.cover.url }}" alt="{{ product.name }}{% if product.size %}, {{ product.size }}{% endif %}" width="800" height="800" fetchpriority="high" data-gallery-main>{% else %}<svg class="icon" style="width:120px;height:120px;color:#c9c7c0"><use href="#i-stamp"/></svg>{% endif %}
+      </div>
+      {% if product.images.all %}
+      <div class="gallery__thumbs">
+        {% if product.cover %}<button class="gallery__thumb is-active" type="button" data-src="{{ product.cover.url }}" aria-label="{% translate 'Фото' %} 1"><img src="{{ product.cover.url }}" alt="" width="80" height="80"></button>{% endif %}
+        {% for im in product.images.all %}<button class="gallery__thumb" type="button" data-src="{{ im.image.url }}" aria-label="{% translate 'Фото' %} {{ forloop.counter|add:1 }}"><img src="{{ im.image.url }}" alt="{{ product.name }}" loading="lazy" width="80" height="80"></button>{% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <span class="badge badge--muted">{{ product.category.name }}</span>
+        {% if product.is_popular %}<span class="badge">{% translate "Хит продаж" %}</span>{% endif %}
+        {% if product.in_stock %}<span class="badge badge--dark">{% translate "В наличии" %}</span>{% else %}<span class="badge badge--muted">{% translate "Под заказ" %}</span>{% endif %}
+      </div>
+      <h1 class="h2 pdp__title">{{ product.name }}</h1>
+      {% if product.short_description %}<p class="lead">{{ product.short_description }}</p>{% endif %}
+
+      <div class="pdp__price">{% include 'include/price.html' with p=product %}</div>
+
+      <div class="pdp__actions">
+        <button class="btn btn--yellow" type="button" data-modal-open data-type="order" data-product="{{ product.pk }}" data-subject="Заказ: {{ product.name_ru|default:product.name }}"><svg class="icon"><use href="#i-cart"/></svg>{% translate "Заказать" %}</button>
+        {% if product.in_constructor %}<a class="btn btn--ghost" href="{% url 'catalog:constructor' %}?holder={{ product.pk }}" rel="nofollow">{% translate "Собрать печать с этой оснасткой" %}</a>{% endif %}
+        {% if site.whatsapp %}{% translate "Здравствуйте! Интересует" as wa_text %}<a class="btn btn--wa" href="{{ site.whatsapp_url }}?text={{ wa_text|urlencode }}%20{{ product.name|urlencode }}" target="_blank" rel="noopener nofollow"><svg class="icon"><use href="#i-whatsapp"/></svg>{% translate "Спросить" %}</a>{% endif %}
+      </div>
+
+      <div class="perks">
+        <div class="perk"><svg class="icon"><use href="#i-bolt"/></svg>{% translate "Изготовление от 1 часа" %}</div>
+        <div class="perk"><svg class="icon"><use href="#i-pen"/></svg>{% translate "Макет бесплатно" %}</div>
+        <div class="perk"><svg class="icon"><use href="#i-shield"/></svg>{% translate "Гарантия на оснастку" %}</div>
+        <div class="perk"><svg class="icon"><use href="#i-truck"/></svg>{% translate "Доставка по городу" %}</div>
+      </div>
+
+      {% if product.brand or product.size or product.shape %}
+      <h2 class="h3" style="margin-top:40px">{% translate "Характеристики" %}</h2>
+      <dl class="specs">
+        {% if product.brand %}<div class="specs__row"><dt>{% translate "Бренд" %}</dt><dd>{{ product.brand }}</dd></div>{% endif %}
+        {% if product.size %}<div class="specs__row"><dt>{% translate "Размер оттиска" %}</dt><dd>{{ product.size }}</dd></div>{% endif %}
+        {% if product.shape %}<div class="specs__row"><dt>{% translate "Форма" %}</dt><dd>{{ product.get_shape_display }}</dd></div>{% endif %}
+        <div class="specs__row"><dt>{% translate "Категория" %}</dt><dd>{{ product.category.name }}</dd></div>
+      </dl>
+      {% endif %}
+
+      {% if product.description %}<h2 class="h3" style="margin-top:40px">{% translate "Описание" %}</h2><div class="prose" style="margin-top:16px">{{ product.description|safe }}</div>{% endif %}
+    </div>
+  </div>
+</section>
+
+{% if related %}
+<section class="section section--white">
+  <div class="container">
+    <div class="section-head"><h2 class="h2">{% translate "Похожие товары" %}</h2><a class="link-arrow" href="{{ product.category.get_absolute_url }}">{% translate "Вся категория" %} <svg class="icon"><use href="#i-arrow"/></svg></a></div>
+    <div class="products">{% for p in related %}{% include 'include/product_card.html' %}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

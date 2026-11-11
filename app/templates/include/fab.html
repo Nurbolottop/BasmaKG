@@ -1,0 +1,12 @@
+{% load i18n %}
+<div class="fab" data-fab>
+  <button class="fab__main" type="button" aria-label="{% translate 'Связаться с нами' %}" aria-expanded="false" data-fab-toggle>
+    <svg class="icon"><use href="#i-chat"/></svg>
+  </button>
+  <div class="fab__list">
+    {% if site.whatsapp %}<a class="fab__link" href="{{ site.whatsapp_url }}" target="_blank" rel="noopener">WhatsApp <span style="background:#25d366"><svg class="icon"><use href="#i-whatsapp"/></svg></span></a>{% endif %}
+    {% if site.telegram %}<a class="fab__link" href="{{ site.telegram_url }}" target="_blank" rel="noopener">Telegram <span style="background:#229ed9"><svg class="icon"><use href="#i-telegram"/></svg></span></a>{% endif %}
+    <a class="fab__link" href="tel:{{ site.phone_href }}">{% translate "Позвонить" %} <span style="background:var(--ink)"><svg class="icon"><use href="#i-phone"/></svg></span></a>
+    <button class="fab__link" type="button" data-modal-open data-subject="Обратный звонок">{% translate "Перезвоните мне" %} <span style="background:var(--yellow);color:var(--ink)"><svg class="icon"><use href="#i-clock"/></svg></span></button>
+  </div>
+</div>

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% translate "Страница не найдена" %} | {{ site.site_name }}{% endblock %}
+{% block content %}
+<section class="container center-page"><div>
+  <div class="center-page__big">4<span>0</span>4</div>
+  <h1 class="h3">{% translate "Такой страницы нет" %}</h1>
+  <p>{% translate "Возможно, она переехала после обновления сайта. Загляните в каталог или вернитесь на главную." %}</p>
+  <div class="actions"><a class="btn btn--yellow" href="{% url 'base:home' %}">{% translate "На главную" %}</a><a class="btn btn--ghost" href="{% url 'catalog:catalog' %}">{% translate "Каталог" %}</a></div>
+</div></section>
+{% endblock %}
